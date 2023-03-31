@@ -33,13 +33,16 @@ def create_session(client_specified_retry=None):
     retry on 502
     """
     session = Session()
+    session.headers.update({"User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0"}) #TODO: expose headers in create_session
+
+
     if client_specified_retry:
         retry = client_specified_retry
     else:
         retry = Retry(
-            5,
-            backoff_factor=0.3,
-            status_forcelist=(502, 503, 504),
+            10,
+            backoff_factor=0.5,
+            status_forcelist=(429, 502, 503, 504), 
             # CAUTION: adding 'POST' to this list which is not technically idempotent
             method_whitelist=(
                 "POST",
